@@ -9,8 +9,12 @@ struct AppRootView: View {
 
     init(repository: any MovieRepository) {
         self.repository = repository
-        _popularVM = State(initialValue: PopularViewModel(repository: repository))
-        _searchVM = State(initialValue: SearchViewModel(repository: repository))
+        _popularVM = State(initialValue: PopularViewModel(
+            getPopularMovies: GetPopularMoviesUseCase(repository: repository)
+        ))
+        _searchVM = State(initialValue: SearchViewModel(
+            searchMovies: SearchMoviesUseCase(repository: repository)
+        ))
     }
 
     var body: some View {
@@ -19,7 +23,10 @@ struct AppRootView: View {
                 NavigationStack {
                     PopularView(viewModel: popularVM)
                         .navigationDestination(for: Movie.self) { movie in
-                            MovieDetailsView(movie: movie, repository: repository)
+                            MovieDetailsView(
+                                movie: movie,
+                                getMovieDetails: GetMovieDetailsUseCase(repository: repository)
+                            )
                         }
                         .toolbar { themeMenu }
                 }
@@ -28,7 +35,10 @@ struct AppRootView: View {
                 NavigationStack {
                     SearchView(viewModel: searchVM)
                         .navigationDestination(for: Movie.self) { movie in
-                            MovieDetailsView(movie: movie, repository: repository)
+                            MovieDetailsView(
+                                movie: movie,
+                                getMovieDetails: GetMovieDetailsUseCase(repository: repository)
+                            )
                         }
                         .toolbar { themeMenu }
                 }

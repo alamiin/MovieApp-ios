@@ -3,8 +3,11 @@ import SwiftUI
 struct MovieDetailsView: View {
     @State private var viewModel: MovieDetailsViewModel
 
-    init(movie: Movie, repository: any MovieRepository) {
-        _viewModel = State(initialValue: MovieDetailsViewModel(movieId: movie.id, repository: repository))
+    init(movie: Movie, getMovieDetails: GetMovieDetailsUseCase) {
+        _viewModel = State(initialValue: MovieDetailsViewModel(
+            movieId: movie.id,
+            getMovieDetails: getMovieDetails
+        ))
     }
 
     var body: some View {
