@@ -1,17 +1,15 @@
-//
-//  MovieApp_iosApp.swift
-//  MovieApp-ios
-//
-//  Created by Md Al-Amin on 6/20/26.
-//
-
 import SwiftUI
 
 @main
 struct MovieApp_iosApp: App {
+    @State private var appViewModel = AppViewModel()
+    private let repository: any MovieRepository = MovieRepositoryImpl()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppRootView(repository: repository)
+                .environment(appViewModel)
+                .preferredColorScheme(appViewModel.themeMode.colorScheme)
         }
     }
 }
