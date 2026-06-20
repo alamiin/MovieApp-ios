@@ -7,18 +7,18 @@ final class MovieDetailsViewModel {
     var errorMessage: String?
 
     private let movieId: String
-    private let repository: any MovieRepository
+    private let getMovieDetails: GetMovieDetailsUseCase
 
-    init(movieId: String, repository: any MovieRepository) {
+    init(movieId: String, getMovieDetails: GetMovieDetailsUseCase) {
         self.movieId = movieId
-        self.repository = repository
+        self.getMovieDetails = getMovieDetails
     }
 
     func load() async {
         isLoading = true
         errorMessage = nil
         do {
-            details = try await repository.getMovieDetails(movieId: movieId)
+            details = try await getMovieDetails.execute(movieId: movieId)
         } catch {
             errorMessage = error.localizedDescription
         }

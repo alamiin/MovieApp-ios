@@ -11,10 +11,10 @@ final class SearchViewModel {
     private var endReached = false
     private var searchTask: Task<Void, Never>?
 
-    private let repository: any MovieRepository
+    private let searchMovies: SearchMoviesUseCase
 
-    init(repository: any MovieRepository) {
-        self.repository = repository
+    init(searchMovies: SearchMoviesUseCase) {
+        self.searchMovies = searchMovies
     }
 
     func queryChanged(_ newQuery: String) {
@@ -77,13 +77,13 @@ final class SearchViewModel {
     private func performSearch(query: String, page: Int, append: Bool) async {
         isLoading = true
         do {
-            let movies = try await repository.searchMovies(query: query, page: page)
+            let movies = try await searchMovies.execute(query: query, page: page)
             guard query == self.query.trimmingCharacters(in: .whitespaces) else { return }
             if movies.isEmpty {
                 endReached = true
             } else {
                 if append {
-                    let existingIds = Set(results.map(\.id))
+                    let existingIds = Set(results.map { $0.id })
                     let deduped = movies.filter { !existingIds.contains($0.id) }
                     results.append(contentsOf: deduped)
                 } else {

@@ -10,10 +10,10 @@ final class PopularViewModel {
     private var endReached = false
     private var loadTask: Task<Void, Never>?
 
-    private let repository: any MovieRepository
+    private let getPopularMovies: GetPopularMoviesUseCase
 
-    init(repository: any MovieRepository) {
-        self.repository = repository
+    init(getPopularMovies: GetPopularMoviesUseCase) {
+        self.getPopularMovies = getPopularMovies
     }
 
     func loadFirstPage() {
@@ -35,12 +35,12 @@ final class PopularViewModel {
         isLoading = true
         loadTask = Task {
             do {
-                let newMovies = try await repository.getPopularMovies(page: currentPage)
+                let newMovies = try await getPopularMovies.execute(page: currentPage)
                 guard !Task.isCancelled else { return }
                 if newMovies.isEmpty {
                     endReached = true
                 } else {
-                    let existingIds = Set(movies.map(\.id))
+                    let existingIds = Set(movies.map { $0.id })
                     let deduped = newMovies.filter { !existingIds.contains($0.id) }
                     movies.append(contentsOf: deduped)
                     page += 1
